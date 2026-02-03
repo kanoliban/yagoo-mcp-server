@@ -4,6 +4,17 @@
  * Generated from directory.json
  */
 
+export interface McpConfig {
+  /** npx command to run the MCP server */
+  command: string;
+  /** Arguments to pass to the command */
+  args: string[];
+  /** Environment variables required */
+  env?: Record<string, string>;
+  /** Description of what this MCP server provides */
+  description?: string;
+}
+
 export interface Agent {
   name: string;
   slug: string;
@@ -27,6 +38,8 @@ export interface Agent {
   reliability_notes: string;
   integrates_with: string[];
   mcp_support: boolean;
+  /** MCP server configuration if available */
+  mcp_config?: McpConfig;
   verified: boolean;
 }
 
@@ -141,7 +154,12 @@ export const AGENTS: Agent[] = [
     autonomy_level: "copilot",
     reliability_notes: "Very reliable. Active development and community.",
     integrates_with: ["Git", "GitHub", "GitLab"],
-    mcp_support: false,
+    mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-git"],
+      description: "Git operations: read, search, and manipulate Git repositories."
+    },
     verified: true
   },
   {
@@ -166,7 +184,13 @@ export const AGENTS: Agent[] = [
     autonomy_level: "copilot",
     reliability_notes: "Very reliable for completions. Quality varies by language.",
     integrates_with: ["VS Code", "JetBrains", "Neovim", "GitHub"],
-    mcp_support: false,
+    mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-github"],
+      env: { "GITHUB_PERSONAL_ACCESS_TOKEN": "your-github-token" },
+      description: "GitHub API access: repos, issues, PRs, code search."
+    },
     verified: true
   },
   {
@@ -341,7 +365,12 @@ export const AGENTS: Agent[] = [
     autonomy_level: "fully_autonomous",
     reliability_notes: "Reliability depends on implementation. Active open source project.",
     integrates_with: ["Playwright", "Any LLM API"],
-    mcp_support: false,
+    mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@playwright/mcp@latest"],
+      description: "Browser automation via Playwright. Enables web navigation, form filling, screenshots."
+    },
     verified: true
   },
   {
@@ -416,7 +445,13 @@ export const AGENTS: Agent[] = [
     autonomy_level: "copilot",
     reliability_notes: "Very reliable for quick lookups.",
     integrates_with: ["Chrome extension", "Mobile"],
-    mcp_support: false,
+    mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@anthropic/mcp-server-brave-search"],
+      env: { "BRAVE_API_KEY": "your-brave-api-key" },
+      description: "Web search via Brave Search API. Alternative to Perplexity for real-time info."
+    },
     verified: true
   },
   {
@@ -866,7 +901,13 @@ export const AGENTS: Agent[] = [
     autonomy_level: "copilot",
     reliability_notes: "Reliable for standard analysis tasks.",
     integrates_with: ["CSV", "Excel", "Google Sheets"],
-    mcp_support: false,
+    mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-filesystem"],
+      env: { "ALLOWED_DIRECTORIES": "/path/to/data" },
+      description: "File system access for data analysis. Set ALLOWED_DIRECTORIES to your data folder."
+    },
     verified: true
   },
   {
@@ -991,7 +1032,13 @@ export const AGENTS: Agent[] = [
     autonomy_level: "fully_autonomous",
     reliability_notes: "Reliable for configured workflows.",
     integrates_with: ["Gmail", "Outlook", "Slack", "Salesforce", "HubSpot"],
-    mcp_support: false,
+    mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@anthropic/mcp-server-slack"],
+      env: { "SLACK_BOT_TOKEN": "xoxb-your-bot-token", "SLACK_TEAM_ID": "your-team-id" },
+      description: "Slack API access: read channels, send messages, manage workflows."
+    },
     verified: true
   },
   {
@@ -1141,7 +1188,13 @@ export const AGENTS: Agent[] = [
     autonomy_level: "copilot",
     reliability_notes: "Reliable within Notion.",
     integrates_with: ["Notion"],
-    mcp_support: false,
+    mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@notionhq/notion-mcp-server"],
+      env: { "NOTION_API_KEY": "your-notion-integration-token" },
+      description: "Notion API access: read/write pages, databases, blocks."
+    },
     verified: true
   },
   {
@@ -1392,6 +1445,12 @@ export const AGENTS: Agent[] = [
     reliability_notes: "Very reliable. Enterprise-grade API.",
     integrates_with: ["Everything via API"],
     mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "@anthropic/claude-code"],
+      env: { "ANTHROPIC_API_KEY": "your-anthropic-api-key" },
+      description: "Claude API access via Claude Code CLI. Full agentic capabilities."
+    },
     verified: true
   },
   {
@@ -1442,6 +1501,11 @@ export const AGENTS: Agent[] = [
     reliability_notes: "Directory is curated. Recommendations quality depends on query clarity.",
     integrates_with: ["MCP", "Any LLM via API"],
     mcp_support: true,
+    mcp_config: {
+      command: "npx",
+      args: ["-y", "yagoo-mcp-server"],
+      description: "Agent directory and discovery. Search, compare, and get details on 56+ AI agents."
+    },
     verified: true
   }
 ];

@@ -86,6 +86,25 @@ function formatAgentDetail(agent: Agent): string {
     `**Autonomy Level:** ${agent.autonomy_level}`,
     `**Open Source:** ${agent.open_source ? 'Yes' : 'No'}${agent.repo_url ? ` (${agent.repo_url})` : ''}`,
     `**MCP Support:** ${agent.mcp_support ? 'Yes' : 'No'}`,
+  ];
+
+  // Add MCP config if available
+  if (agent.mcp_support && agent.mcp_config) {
+    lines.push("");
+    lines.push("## MCP Server Configuration");
+    lines.push("```json");
+    lines.push(JSON.stringify({
+      command: agent.mcp_config.command,
+      args: agent.mcp_config.args,
+      ...(agent.mcp_config.env && { env: agent.mcp_config.env })
+    }, null, 2));
+    lines.push("```");
+    if (agent.mcp_config.description) {
+      lines.push(`*${agent.mcp_config.description}*`);
+    }
+  }
+
+  lines.push(
     "",
     "## Description",
     agent.description,
@@ -110,7 +129,7 @@ function formatAgentDetail(agent: Agent): string {
     "",
     "## Integrations",
     agent.integrates_with.length > 0 ? agent.integrates_with.join(", ") : "None listed"
-  ];
+  );
 
   return lines.join("\n");
 }
@@ -241,6 +260,9 @@ Returns:
       lines.push(`**Watch out for:** ${agent.limitations[0] || "No major limitations noted"}`);
       lines.push(`**Pricing:** ${agent.pricing_model} — ${agent.pricing_details}`);
       lines.push(`**URL:** ${agent.url}`);
+      if (agent.mcp_support && agent.mcp_config) {
+        lines.push(`**MCP:** \`${agent.mcp_config.command} ${agent.mcp_config.args.join(" ")}\``);
+      }
       lines.push("");
     }
 
@@ -446,6 +468,60 @@ Returns:
     if (mcpAgent) {
       lines.push(`- **MCP integration**: ${mcpAgent.name}`);
     }
+
+    return {
+      content: [{ type: "text", text: lines.join("\n") }]
+    };
+  }
+);
+
+// Tool: List MCP-enabled agents
+server.registerTool(
+  "yagoo_list_mcp",
+  {
+    title: "List MCP-Enabled Agents",
+    description: `List all agents with MCP server support and their connection configs.
+
+Returns:
+  All agents that can be connected via MCP, with ready-to-use configuration.`,
+    inputSchema: z.object({}).strict(),
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false
+    }
+  },
+  async () => {
+    const mcpAgents = AGENTS.filter(a => a.mcp_support && a.mcp_config);
+
+    const lines = [
+      "# MCP-Enabled Agents",
+      "",
+      `${mcpAgents.length} agents with MCP server support:`,
+      ""
+    ];
+
+    for (const agent of mcpAgents) {
+      lines.push(`## ${agent.name}`);
+      lines.push(`*${agent.tagline}*`);
+      lines.push("");
+      lines.push("**Connection:**");
+      lines.push("```json");
+      lines.push(JSON.stringify({
+        command: agent.mcp_config!.command,
+        args: agent.mcp_config!.args,
+        ...(agent.mcp_config!.env && { env: agent.mcp_config!.env })
+      }, null, 2));
+      lines.push("```");
+      if (agent.mcp_config!.description) {
+        lines.push(agent.mcp_config!.description);
+      }
+      lines.push("");
+    }
+
+    lines.push("---");
+    lines.push("*Add to Claude Code: `claude mcp add <name> -- <command> <args>`*");
 
     return {
       content: [{ type: "text", text: lines.join("\n") }]
