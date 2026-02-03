@@ -37,10 +37,10 @@
   "homepage": "https://yagoo.ai",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yagoo-ai/yagoo-mcp-server"
+    "url": "https://github.com/kanoliban/yagoo-mcp-server"
   },
   "bugs": {
-    "url": "https://github.com/yagoo-ai/yagoo-mcp-server/issues"
+    "url": "https://github.com/kanoliban/yagoo-mcp-server/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.6.1",
