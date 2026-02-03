@@ -248,19 +248,7 @@ Returns:
     lines.push("*Use yagoo_get_agent with slug for full details. Use yagoo_compare to compare options.*");
 
     return {
-      content: [{ type: "text", text: lines.join("\n") }],
-      structuredContent: {
-        query: params.query,
-        total: results.length,
-        results: results.map(r => ({
-          slug: r.agent.slug,
-          name: r.agent.name,
-          tagline: r.agent.tagline,
-          score: r.score,
-          url: r.agent.url,
-          pricing: r.agent.pricing_model
-        }))
-      }
+      content: [{ type: "text", text: lines.join("\n") }]
     };
   }
 );
@@ -303,8 +291,7 @@ Returns:
     }
 
     return {
-      content: [{ type: "text", text: formatAgentDetail(agent) }],
-      structuredContent: agent as unknown as Record<string, unknown>
+      content: [{ type: "text", text: formatAgentDetail(agent) }]
     };
   }
 );
@@ -349,15 +336,7 @@ Returns:
     lines.push("*Use yagoo_search with category filter to explore specific categories.*");
 
     return {
-      content: [{ type: "text", text: lines.join("\n") }],
-      structuredContent: {
-        total_agents: AGENTS.length,
-        categories: Object.entries(CATEGORY_LABELS).map(([slug, name]) => ({
-          slug,
-          name,
-          count: categoryCounts[slug] || 0
-        }))
-      }
+      content: [{ type: "text", text: lines.join("\n") }]
     };
   }
 );
@@ -469,19 +448,7 @@ Returns:
     }
 
     return {
-      content: [{ type: "text", text: lines.join("\n") }],
-      structuredContent: {
-        agents: agents.map(a => ({
-          slug: a.slug,
-          name: a.name,
-          pricing_model: a.pricing_model,
-          pricing_details: a.pricing_details,
-          autonomy_level: a.autonomy_level,
-          best_for: a.best_for,
-          limitations: a.limitations,
-          mcp_support: a.mcp_support
-        }))
-      }
+      content: [{ type: "text", text: lines.join("\n") }]
     };
   }
 );
